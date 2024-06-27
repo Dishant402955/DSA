@@ -1,3 +1,5 @@
+// the approach will be written soon
+
 int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
     
     int *ans = (int*) malloc( sizeof(int) * 2 );

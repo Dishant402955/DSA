@@ -1,5 +1,9 @@
+// the approach will be written soon
+
 class Solution {
+
 public:
+
     int removeDuplicates(vector<int>& nums) {
     
         int size = nums.size();
@@ -11,13 +15,11 @@ public:
         
         for(int i = 1 ; i < size  ; i++){
             
-            if( helper[last]  == nums[i] ){
-                continue;
-            }
+            if( helper[last]  == nums[i] )   continue;
             
             helper.push_back(nums[i]);
             last++;
-            
+    
         }
         
         for(int i = 0 ; i < helper.size() ; i++){
@@ -27,4 +29,5 @@ public:
         return helper.size() ;
         
     }
+    
 };

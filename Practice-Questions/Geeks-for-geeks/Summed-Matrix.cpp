@@ -1,5 +1,9 @@
+// the approach will be written soon
+
 class Solution {
+
   public:
+  
     long long sumMatrix(long long n, long long q) {
 
         if ( q <= 2*n ){
