@@ -1,4 +1,3 @@
-// find solution from website
 //function Template for C++
 
 //Function to reverse the queue.
