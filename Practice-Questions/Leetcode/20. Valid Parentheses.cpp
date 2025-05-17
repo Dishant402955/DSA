@@ -17,6 +17,7 @@ public:
             return false;
 
         stack<char> stack;
+
         for( char ch: s){
 
             if( ch=='(' || ch=='{' || ch=='['){
@@ -27,11 +28,23 @@ public:
                     return false;
                     
                 char top = stack.top();
-                if(!can(top,ch)){
-                    return false;
-                }
-                stack.pop();
 
+
+                if( top == '(' && ch == ')'){
+                  stack.pop();
+                  continue;
+                }
+                else if( top == '[' && ch == ']'){
+                  stack.pop();
+                  continue;
+                }
+                else if( top == '{' && ch == '}'){
+                  stack.pop();
+                  continue;
+                }
+                else{
+                  return false;
+                }                 
             }
 
         }
