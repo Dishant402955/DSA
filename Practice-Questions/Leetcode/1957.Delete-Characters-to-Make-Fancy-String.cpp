@@ -1,19 +1,18 @@
 class Solution {
 public:
-    string makeFancyString(string s) {
-        string ans = "";
-        ans.push_back(s[0]);
-        int n = s.size(),cnt = 1;
-        for(int i=1;i<n;i++){
-            if(s[i] == ans.back()){
-                cnt++;
-                if(cnt < 3)ans.push_back(s[i]);
-            }
-            else{
-                cnt = 1;
-                ans.push_back(s[i]);
-            }
+    static string makeFancyString(string& s) {
+        int n=s.size(), i=0;
+        char prev='@';
+        for(int len=0; char c: s){
+            if (prev!=c) len=1;
+            else len++;
+            if (len<= 2) 
+                s[i++]=c;
+            prev=c;
+            
         }
-        return ans;
+        s.resize(i);
+        return s;
+         
     }
 };
