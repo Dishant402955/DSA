@@ -1,3 +1,4 @@
+
 using info = tuple<double, int, int>;
 info A[100000];
 class Solution {
