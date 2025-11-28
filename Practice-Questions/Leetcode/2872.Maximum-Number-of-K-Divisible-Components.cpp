@@ -1,3 +1,4 @@
+
 class Solution {
     int k, ans;
     vector<vector<int>> adj;
