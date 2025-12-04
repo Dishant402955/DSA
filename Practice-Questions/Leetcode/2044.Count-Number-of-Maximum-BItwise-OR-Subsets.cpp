@@ -1,25 +1,24 @@
 class Solution {
 public:
+    int solve(vector<int>& nums,int i,int currOR ,int maxOR,vector<vector<int>>&t){
+           if(i==nums.size()){
+             if(currOR==maxOR) return 1;
+             return 0;
+           }
+
+           if(t[i][currOR]!=-1) return t[i][currOR];
+
+           return t[i][currOR]=solve(nums,i+1,nums[i]|currOR,maxOR,t)+solve(nums,i+1,currOR,maxOR,t);
+    }
     int countMaxOrSubsets(vector<int>& nums) {
-        int n = nums.size();
-        int m = 0, c = 0;
-
-        for (int x : nums) {
-            m |= x;
+        
+        int maxOR=0;
+        int currOR=0;
+        for(int num:nums){
+            maxOR|=num;
         }
-
-        int t = 1 << n;
-        for (int mask = 1; mask < t; ++mask) {
-            int o = 0;
-            for (int i = 0; i < n; ++i) {
-                if (mask & (1 << i)) {
-                    o |= nums[i];
-                }
-            }
-            if (o == m) {
-                ++c;
-            }
-        }
-        return c;
+        int n=nums.size();
+        vector<vector<int>>t(n+1,vector<int>(maxOR+1,-1));
+        return solve(nums,0,currOR,maxOR,t);
     }
 };
