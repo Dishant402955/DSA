@@ -1,38 +1,30 @@
 class Solution {
 public:
     int minSubarray(vector<int>& nums, int p) {
-        long long totalSum = 0;  // Use long long to avoid overflow
-        for (int num : nums) {
-            totalSum += num;
-        }
-        int remainder = totalSum % p;
+         long long total = 0;
+        for (int x : nums) total += x;
 
-        // If the total sum is already divisible by p, return 0
-        if (remainder == 0) {
-            return 0;
-        }
+        int need = total % p;
+        if (need == 0) return 0; 
 
-        return findSmallestSubarray(nums, p, remainder);
-    }
+        unordered_map<int, int> mp;
+        mp[0] = -1; 
 
-private:
-    int findSmallestSubarray(vector<int>& nums, int p, int remainder) {
-        long long prefixSum = 0;  // Use long long to avoid overflow
-        int minLength = nums.size();
-        unordered_map<int, int> prefixMap;
-        prefixMap[0] = -1;  // Initial condition for no subarray
+        long long prefix = 0;
+        int ans = nums.size();
 
         for (int i = 0; i < nums.size(); i++) {
-            prefixSum += nums[i];
-            int targetRemainder = (prefixSum % p - remainder + p) % p;
+            prefix = (prefix + nums[i]) % p;
 
-            if (prefixMap.find(targetRemainder) != prefixMap.end()) {
-                minLength = min(minLength, i - prefixMap[targetRemainder]);
+            int target = (prefix - need + p) % p;
+
+            if (mp.count(target)) {
+                ans = min(ans, i - mp[target]);
             }
 
-            prefixMap[prefixSum % p] = i;
+            mp[prefix] = i;
         }
 
-        return minLength < nums.size() ? minLength : -1;
+        return (ans >= nums.size() ? -1 : ans);
     }
 };
