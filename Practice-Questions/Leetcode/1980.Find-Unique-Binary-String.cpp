@@ -1,30 +1,14 @@
 class Solution {
 public:
-    unordered_set<string> st;
-    string backtrack(string s, int n){
-        if(s.size()==n){
-            if(st.find(s)==st.end()){
-                return s;
-            }
-            return "";
-        }
-
-        string ans = backtrack(s+"0", n);
-        if(ans!="") return ans;
-        ans = backtrack(s+"1", n);
-
-        return ans;
-    }
-
     string findDifferentBinaryString(vector<string>& nums) {
-        st.insert(nums.begin(), nums.end());
+        const int len=nums[0].size();
+        vector<bool> hasX(1<<len, 0);
+        for(auto& x:  nums)
+            hasX[bitset<16>(x).to_ulong()]=1;
+        int N=0;//find N
 
-        int n = nums[0].size();
-
-        string ans = backtrack("0", n);
-        if(ans!="") return ans;
-        ans = backtrack("1", n);
-
-        return ans;
+        for(; N<(1<<len) && hasX[N]; N++);
+    //    cout<<N<<endl;
+        return bitset<16>(N).to_string().substr(16-len,len);
     }
 };
