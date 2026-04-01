@@ -1,40 +1,91 @@
-class Solution {
+class Solution
+{
 public:
-    vector<int> survivedRobotsHealths(vector<int>& positions,
-                                      vector<int>& healths, string directions) {
-        int n = positions.size();
-        vector<int> indices(n), result;
-        stack<int> stack;
+    using u32 = uint32_t;
 
-        for (int index = 0; index < n; ++index) {
-            indices[index] = index;
+    [[nodiscard]] auto survivedRobotsHealths(
+        std::vector<int>& pos_,
+        std::vector<int>& hp_,
+        std::string& dir) noexcept
+    {
+        auto& pos = reinterpret_cast<std::vector<u32>&>(pos_);
+        auto& hp = reinterpret_cast<std::vector<u32>&>(hp_);
+        const u32 n = static_cast<u32>(pos_.size());
+
+        // Assemble the indices in their natural ascending order
+        static u32 indices[100000];
+        std::iota(indices, indices + n, 0u);
+
+        // Arrange said indices according
+        // to the positions they reference
+        std::ranges::sort(
+            indices,
+            indices + n,
+            std::less{},
+            [&](auto i) { return pos[i]; });
+
+        // nr: the present tally of surviving
+        // automatons proceeding rightward
+        for (u32 i = 0, nr = 0; i != n; ++i)
+        {
+            u32 right = indices[i];
+            bool in = dir[right] == 'L';
+            if (in && nr)
+            {
+                // We have encountered a contrarian soul advancing
+                // leftward, whilst at least one stalwart persists
+                // in moving right. Thus, a most inevitable duel
+                // must be conducted. Let it be known: the fallen
+                // shall have their vitality reduced to naught.
+                u32 left = indices[nr - 1];
+                if (hp[right] < hp[left])
+                {
+                    // The rightward challenger is bested
+                    hp[right] = 0;
+                    --hp[left];
+                }
+                else if (hp[right] > hp[left])
+                {
+                    // The leftward defender is undone: permit
+                    // this fellow another engagement forthwith
+                    --i;
+                    hp[left] = 0;
+                    --hp[right];
+                    --nr;
+                }
+                else
+                {
+                    // A most equitable demise befalls both parties
+                    --nr;
+                    hp[right] = 0;
+                    hp[left] = 0;
+                }
+            }
+            else
+            {
+                // Admit the current automaton into
+                // the ranks, should it be worthy
+                indices[nr] = indices[i];
+                nr += !in;
+            }
         }
 
-        sort(indices.begin(), indices.end(),
-             [&](int lhs, int rhs) { return positions[lhs] < positions[rhs]; });
+        // The original ordering of positions remains undisturbed
+        // we shall merely gather those whose vitality yet
+        // endures into the position array, sparing ourselves
+        // needless allocation
+        u32 alive = 0;
+        for (u32 h : hp)
+        {
+            pos[alive] = h;
+            alive += !!h;
+        }
 
-        for (int currentIndex : indices) {
-            // Add right-moving robots to the stack
-            if (directions[currentIndex] == 'R') {
-                stack.push(currentIndex);
-            } else {
-                while (!stack.empty() && healths[currentIndex] > 0) {
-                    // Pop the top robot from the stack for collision check
-                    int topIndex = stack.top();
-                    stack.pop();
+        pos.resize(alive);
 
-                    // Top robot survives, current robot is destroyed
-                    if (healths[topIndex] > healths[currentIndex]) {
-                        healths[topIndex] -= 1;
-                        healths[currentIndex] = 0;
-                        stack.push(topIndex);
-                    } else if (healths[topIndex] < healths[currentIndex]) {
-                        // Current robot survives, top robot is destroyed
-                        healths[currentIndex] -= 1;
-                        healths[topIndex] = 0;
-                    } else {
-                        // Both robots are destroyed
-                        healths[currentIndex] = 0;
+        return pos_;
+    }
+};                        healths[currentIndex] = 0;
                         healths[topIndex] = 0;
                     }
                 }
