@@ -1,35 +1,32 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution {
 public:
     int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
-        unordered_map<string, int> prefixMap;
-        
-        // Step 1: Build the prefix map for arr1
-        for (int num : arr1) {
-            string strNum = to_string(num);
-            string prefix = "";
-            for (char ch : strNum) {
-                prefix += ch;
-                prefixMap[prefix]++;
+        unordered_set<int> set1;
+        for(int i : arr1){
+            int temp = i;
+            int prefix = 0;
+            while(temp){
+                set1.insert(temp);
+                temp /= 10;
             }
         }
-        
         int maxLength = 0;
-        
-        // Step 2: Check for common prefixes in arr2
-        for (int num : arr2) {
-            string strNum = to_string(num);
-            string prefix = "";
-            for (char ch : strNum) {
-                prefix += ch;
-                if (prefixMap.find(prefix) != prefixMap.end()) {
-                    maxLength = max(maxLength, static_cast<int>(prefix.length()));
+        for(int i : arr2){
+            int val = i;
+            while(val){
+                if(set1.count(val)){
+                    int currLength = 0;
+                    int temp = val;
+                    while(temp){
+                        currLength++;
+                        temp /= 10;
+                    }
+                    maxLength = max(maxLength,currLength);
+                    break;
                 }
+                val /= 10;
             }
         }
-        
         return maxLength;
-    }
+}
 };
