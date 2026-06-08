@@ -1,33 +1,31 @@
-/*
-By   :: savetrees
-Used :: In Place Modification using Erase and Insert
-*/
 class Solution {
 public:
-    vector<int> pivotArray(vector<int>& nums,int pivot) {
-        int ptr=0;
-        bool check=false;
-        for (int i=0;i<nums.size();i++) {
-            int n=nums[i];
-            if (nums[i]<pivot) {  
-                if (ptr!=i) {
-                    int temp=nums[i];
-                    nums.erase(nums.begin()+i);
-                    nums.insert(nums.begin()+ptr,temp);
-                }
-                ptr++;
+    vector<int> pivotArray(vector<int>& nums, int pivot) {
+        int n = nums.size();
+        vector<int> ans(n);
+        
+        int left = 0;
+        int right = n - 1;
+        int i=0,j=n-1;
+        
+        while(i<n){
+            if (nums[i] < pivot) {
+                ans[left++] = nums[i];
             }
-        }
-        for (int i=ptr;i<nums.size();i++) {  
-            if (nums[i]==pivot) {
-                if (ptr!=i) {
-                    int temp=nums[i];
-                    nums.erase(nums.begin()+i);
-                    nums.insert(nums.begin()+ptr,temp);
-                }
-                ptr++;
+            
+            if (nums[j] > pivot) {
+                ans[right--] = nums[j];
             }
+
+            i ++;
+            j --;
         }
-        return nums;
+        
+        //remaining indices will be filled with pivot
+        while (left <= right) {
+            ans[left++] = pivot;
+        }
+        
+        return ans;
     }
 };
