@@ -1,18 +1,23 @@
 class Solution {
 public:
-    int numberOfSubstrings(std::string s) {
-        std::vector<int> count(3, 0); 
-        int left = 0; 
-        int result = 0; 
-        for (int i = 0; i < s.length(); i++) {
-            count[s[i] - 'a']++; 
+    int numberOfSubstrings(string s) {
+        int n = s.size();
 
-            while (count[0] > 0 && count[1] > 0 && count[2] > 0) {
-                result += s.length() - i; 
-                count[s[left] - 'a']--; 
-                left++; 
+        vector<int> freq(3, 0);
+
+        int left = 0;
+        int ans = 0;
+
+        for (int right = 0; right < n; right++) {
+            freq[s[right] - 'a']++;
+
+            while (freq[0] && freq[1] && freq[2]) {
+                ans += (n - right);
+                freq[s[left] - 'a']--;
+                left++;
             }
         }
-        return result; 
+
+        return ans;
     }
 };
