@@ -1,24 +1,34 @@
 class Solution {
 public:
-    int stoneGameII(vector<int>& piles) {
-        int length = piles.size();
-        vector<vector<int>> dp(length + 1, vector<int>(length + 1,0));
-        vector<int> sufsum (length + 1, 0);
-        for (int i = length - 1; i >= 0; i--) {
-            sufsum[i] = sufsum[i + 1] + piles[i];
+    int n;
+    int t[2][101][101];
+
+    int solveForAlice(vector<int>& piles, int person, int i, int M) {
+        if (i >= n)
+            return 0;
+
+        if (t[person][i][M] != -1)
+            return t[person][i][M];
+
+        int result = (person == 1) ? -1 : INT_MAX;
+        int stones = 0;
+
+        for (int x = 1; x <= min(2 * M, n - i); x++) {
+            stones += piles[i + x - 1];
+
+            if (person == 1) {
+                result = max(result, stones + solveForAlice(piles, 0, i + x, max(M, x)));
+            } else {
+                result = min(result, solveForAlice(piles, 1, i + x, max(M, x)));
+            }
         }
-        return helper(dp, sufsum, 0, 1);
+
+        return t[person][i][M] = result;
     }
-    
-    int helper(vector<vector<int>>& dp, vector<int>& sufsum, int i, int M) {
-        if (i == sufsum.size()) return 0;
-        if (2*M >= sufsum.size() - i) return sufsum[i];
-        if (dp[i][M] != 0) return dp[i][M];
-        int res = INT_MAX;
-        for (int X = 1; X <= 2*M; X++) {
-            res = min(res, helper(dp, sufsum, i+X, max(X,M)));
-        }
-        dp[i][M] = sufsum[i] - res;
-        return dp[i][M];
+
+    int stoneGameII(vector<int>& piles) {
+        n = piles.size();
+        memset(t, -1, sizeof(t));
+        return solveForAlice(piles, 1, 0, 1);
     }
 };
