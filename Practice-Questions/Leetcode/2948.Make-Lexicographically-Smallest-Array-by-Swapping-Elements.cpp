@@ -1,35 +1,39 @@
 class Solution {
- public:
-  vector<int> lexicographicallySmallestArray(vector<int>& nums, int limit) {
-    vector<int> ans(nums.size());
-    vector<vector<pair<int, int>>> numAndIndexesGroups;
-    for (const pair<int, int>& numAndIndex : getNumAndIndexes(nums))
-      if (numAndIndexesGroups.empty() ||
-          numAndIndex.first - numAndIndexesGroups.back().back().first > limit) {
-        numAndIndexesGroups.push_back({numAndIndex});
-      } else {
-        numAndIndexesGroups.back().push_back(numAndIndex);
-      }
-    for (const vector<pair<int, int>>& numAndIndexesGroup : numAndIndexesGroups) {
-      vector<int> sortedNums;
-      vector<int> sortedIndices;
-      for (const auto& [num, index] : numAndIndexesGroup) {
-        sortedNums.push_back(num);
-        sortedIndices.push_back(index);
-      }
-      ranges::sort(sortedIndices);
-      for (int i = 0; i < sortedNums.size(); ++i)
-        ans[sortedIndices[i]] = sortedNums[i];
+public:
+    vector<int> lexicographicallySmallestArray(vector<int>& nums, int limit) {
+       
+        vector<pair<int,int>>vp;
+        int n = nums.size();
+        for(int i=0;i<n;i++){
+            vp.push_back({nums[i],i});
+        }
+        sort(vp.begin(),vp.end());
+        vector<int>e;
+        int l = 0;
+        e.push_back(vp[0].second);
+        for(int i=1;i<n;i++){
+            if(vp[i].first-vp[i-1].first <= limit){
+                e.push_back(vp[i].second);
+            }
+            else {
+                sort(e.begin(),e.end());
+                 int a = 0;
+                for(int j=l;j<i;j++){
+                    nums[e[a]] = vp[j].first;
+                    a++;
+                }
+                e.assign(0,0);
+                e.push_back(vp[i].second);
+                l = i;
+            }
+        }
+        sort(e.begin(),e.end());
+                 int a = 0;
+                for(int j=l;j<=n-1;j++){
+                    nums[e[a]] = vp[j].first;
+                    a++;
+                }
+                
+        return nums;
     }
-    return ans;
-  }
-
- private:
-  vector<pair<int, int>> getNumAndIndexes(const vector<int>& nums) {
-    vector<pair<int, int>> numAndIndexes;
-    for (int i = 0; i < nums.size(); ++i)
-      numAndIndexes.emplace_back(nums[i], i);
-    ranges::sort(numAndIndexes);
-    return numAndIndexes;
-  }
 };
