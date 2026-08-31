@@ -11,30 +11,45 @@
 class Solution {
 public:
     vector<int> nodesBetweenCriticalPoints(ListNode* head) {
-        vector<int> result = {-1, -1};
 
-        // Initialize minimum distance to the maximum possible value
-        int minDistance = INT_MAX;
+        ListNode* prev,*curr,*nxt;
+        prev=head,curr=head->next;
 
-        // Pointers to track the previous node, current node, and indices
-        ListNode* previousNode = head;
-        ListNode* currentNode = head->next;
-        int currentIndex = 1;
-        int previousCriticalIndex = 0;
-        int firstCriticalIndex = 0;
+        if(curr == nullptr)
+            return {-1,-1};
 
-        while (currentNode->next != nullptr) {
-            // Check if the current node is a local maxima or minima
-            if ((currentNode->val < previousNode->val &&
-                 currentNode->val < currentNode->next->val) ||
-                (currentNode->val > previousNode->val &&
-                 currentNode->val > currentNode->next->val)) {
-                // If this is the first critical point found
-                if (previousCriticalIndex == 0) {
-                    previousCriticalIndex = currentIndex;
-                    firstCriticalIndex = currentIndex;
-                } else {
-                    // Calculate the minimum distance between critical points
+        nxt = curr->next;
+
+        vector<int> v;
+        int i=1;
+
+        while(nxt!=NULL)
+        {
+            if((curr->val>prev->val && curr->val>nxt->val) ||
+               (curr->val<prev->val && curr->val<nxt->val))
+            {
+                v.push_back(i);
+            }
+
+            prev = curr;
+            curr = nxt;
+            nxt = nxt->next;
+            i++;
+        }
+
+        if(v.size()<2)
+            return {-1,-1};
+
+        int mind=INT_MAX;
+
+        for(i=1;i<v.size();i++)
+        {
+            mind=min(mind,v[i]-v[i-1]);
+        }
+
+        return {mind,v.back()-v.front()};
+    }
+};                    // Calculate the minimum distance between critical points
                     minDistance =
                         min(minDistance, currentIndex - previousCriticalIndex);
                     previousCriticalIndex = currentIndex;
