@@ -1,14 +1,21 @@
 class Solution {
 public:
-    int minChanges(const std::string& s) {
-    int count = 0;
-    for (int i = 0; i < s.size() - 1; i += 2) {
-        if (s[i] != s[i + 1]) {
-            count++;
+    int minChanges(string s) {
+        int n = s.size();
+        int flip = 0;
+        int i = 0;
+        while(i < n){
+            int countZero = 0;
+            int countOne = 0;
+            for(int count = 1; count<=2; count++){
+                if(s[i] == '0') countZero++;
+                else countOne++;
+                i++;
+            }
+            if(countZero == 0) continue;
+            if(countOne == 0) continue;
+            flip++;
         }
+        return flip;
     }
-    return count;
-}
 };
-#include <string>
-
